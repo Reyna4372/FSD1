@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBoost - Cybernetic Fitness</title>
+    <style>
+        :root {
+            --black: #050505;
+            --matte: #111111;
+            --dark-violet: #2b00ff;
+            --neon-blue: #00e5ff;
+            --dreamy-purple: #8a2be2;
+            --pearl-white: #fcfcfc;
+            --error: #ff003c;
+            --success: #00ff66;
+            --font-heading: 'Syncopate', 'Arial Black', sans-serif;
+            --font-body: 'Rajdhani', 'Segoe UI', sans-serif;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Syncopate:wght@700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-body);
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--pearl-white);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            min-height: 100vh;
+        }
+
+        /* Canvas Background */
+        #cyber-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .uppercase {
+            text-transform: uppercase;
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+        }
+
+        .text-neon {
+            color: var(--neon-blue);
+        }
+
+        .text-purple {
+            color: var(--dreamy-purple);
+        }
+
+        /* Headings */
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-heading);
+            letter-spacing: 2px;
+        }
+
+        h2.page-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--dreamy-purple));
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+        }
+
+        /* Global Logo */
+        .global-logo {
+            position: fixed;
+            top: 20px;
+            left: 30px;
+            font-size: 1.8rem;
+            font-family: var(--font-heading);
+            color: transparent;
+            -webkit-text-stroke: 1px var(--neon-blue);
+            background: linear-gradient(90deg, var(--neon-blue), var(--dreamy-purple));
+            -webkit-background-clip: text;
+            z-index: 100;
+            text-shadow: 0 0 15px var(--dark-violet);
+            letter-spacing: 5px;
+        }
+
+        /* Sequences */
+        #intro-seq,
+        #overlay-anim {
+            position: fixed;
+            inset: 0;
+            background: var(--black);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .grand-title {
+            font-size: 7vw;
+            font-family: var(--font-heading);
+            color: transparent;
+            -webkit-text-stroke: 2px var(--neon-blue);
+            background: linear-gradient(45deg, var(--neon-blue), var(--dreamy-purple));
+            -webkit-background-clip: text;
+            animation: grandEntrance 3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, cyberPulse 2s infinite alternate;
+        }
+
+        .sub-title {
+            font-size: 1.5rem;
+            color: var(--pearl-white);
+            letter-spacing: 15px;
+            margin-top: 20px;
+            text-transform: uppercase;
+            animation: fadeIn 4s forwards;
+            opacity: 0;
+        }
+
+        @keyframes grandEntrance {
+            0% {
+                transform: scale(4) rotateX(60deg) translateY(-100px);
+                opacity: 0;
+                filter: blur(20px);
+                letter-spacing: -20px;
+            }
+
+            50% {
+                opacity: 1;
+                filter: blur(0px);
+                transform: scale(1.1) rotateX(0deg) translateY(10px);
+            }
+
+            100% {
+                transform: scale(1) translateY(0);
+                letter-spacing: 8px;
+                opacity: 1;
+                filter: drop-shadow(0 0 20px var(--neon-blue));
+            }
+        }
+
+        @keyframes cyberPulse {
+            0% {
+                filter: drop-shadow(0 0 10px var(--dark-violet));
+            }
+
+            100% {
+                filter: drop-shadow(0 0 30px var(--neon-blue)) drop-shadow(0 0 50px var(--dreamy-purple));
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Pages & Containers */
+        .page {
+            min-height: 100vh;
+            padding: 100px 20px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: pageEnter 0.6s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+        }
+
+        @keyframes pageEnter {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.98);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .cyber-panel {
+            background: rgba(17, 17, 17, 0.7);
+            border: 1px solid rgba(138, 43, 226, 0.4);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(138, 43, 226, 0.1);
+            border-radius: 12px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            animation: scanLine 3s linear infinite;
+        }
+
+        @keyframes scanLine {
+            100% {
+                left: 200%;
+            }
+        }
+
+        .dashboard-large {
+            max-width: 1400px;
+            padding: 30px;
+        }
+
+        /* Forms */
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-wrapper label {
+            font-size: 1rem;
+            color: var(--pearl-white);
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(138, 43, 226, 0.5);
+            color: var(--neon-blue);
+            padding: 15px 20px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Rajdhani', monospace;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
+            outline: 1px solid var(--neon-blue);
+        }
+
+        .err-msg {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 6px;
+            min-height: 18px;
+            text-shadow: 0 0 5px rgba(255, 0, 60, 0.5);
+            fontWeight: bold;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(45deg, var(--dark-violet), var(--dreamy-purple));
+            color: var(--pearl-white);
+            border: 1px solid var(--neon-blue);
+            padding: 18px 30px;
+            font-size: 1.2rem;
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .btn-primary.valid {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .btn-primary.valid:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 229, 255, 0.6);
+            background: linear-gradient(45deg, var(--dreamy-purple), var(--neon-blue));
+            color: var(--black);
+            font-weight: 900;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.1);
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 229, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+            color: var(--pearl-white);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        /* Selectors & Radios */
+        .flex-grid {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .select-box {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 15px;
+            border: 1px solid rgba(138, 43, 226, 0.4);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--pearl-white);
+        }
+
+        .select-box:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 229, 255, 0.05);
+        }
+
+        .select-box.active-box {
+            border-color: var(--neon-blue);
+            background: rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+            color: var(--neon-blue);
+        }
+
+        /* BMI Display */
+        .bmi-screen {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+            padding: 30px;
+            border-radius: 8px;
+            border: 2px solid var(--neon-blue);
+            background: rgba(0, 229, 255, 0.05);
+            animation: pulseBmi 2s infinite alternate;
+        }
+
+        .bmi-val {
+            font-size: 3.5rem;
+            font-family: var(--font-heading);
+            color: var(--pear-white);
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .bmi-cat {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        @keyframes pulseBmi {
+            100% {
+                box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+            }
+        }
+
+        /* Tables */
+        .cyber-table-wrap {
+            overflow-x: auto;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid var(--dreamy-purple);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.8);
+            text-align: left;
+        }
+
+        th,
+        td {
+            padding: 20px;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        th {
+            background: rgba(43, 0, 255, 0.3);
+            color: var(--neon-blue);
+            font-family: var(--font-heading);
+            font-size: 0.9rem;
+        }
+
+        tr:hover {
+            background: rgba(0, 229, 255, 0.05);
+        }
+
+        td {
+            font-size: 1.1rem;
+            color: #e0e0e0;
+        }
+
+        .t-day {
+            color: var(--neon-blue);
+            font-weight: bold;
+            font-family: var(--font-heading);
+        }
+
+        .t-topic {
+            color: var(--dreamy-purple);
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .t-rest {
+            text-align: center;
+            color: var(--error);
+            letter-spacing: 10px;
+            opacity: 0.7;
+            font-weight: bold;
+        }
+
+        /* Meter Progress */
+        .meters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .meter-card {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--dreamy-purple);
+        }
+
+        .meter-title {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            color: var(--neon-blue);
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .prog-item {
+            margin-bottom: 20px;
+        }
+
+        .prog-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--pearl-white);
+            font-size: 1.1rem;
+        }
+
+        .prog-val {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+            font-family: monospace;
+            font-size: 1.2rem;
+        }
+
+        .prog-track {
+            width: 100%;
+            height: 16px;
+            background: #222;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #444;
+            position: relative;
+        }
+
+        .prog-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--dreamy-purple), var(--neon-blue));
+            width: 0%;
+            transition: width 2s cubic-bezier(0.1, 0.8, 0.3, 1);
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        /* Custom colors for different meters */
+        .fill-fat {
+            background: linear-gradient(90deg, #ff9900, var(--error));
+            box-shadow: 0 0 15px var(--error);
+        }
+
+        .fill-muscle {
+            background: linear-gradient(90deg, var(--dark-violet), var(--neon-blue));
+        }
+
+        /* Supplement Cards */
+        .supp-grid {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .supp-card {
+            padding: 25px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 4px solid var(--neon-blue);
+            transition: 0.3s;
+        }
+
+        .supp-card:hover {
+            transform: translateX(10px);
+            background: rgba(0, 229, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+        }
+
+        .supp-card h4 {
+            color: var(--neon-blue);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            font-family: var(--font-heading);
+        }
+
+        .supp-card p {
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: #ccc;
+        }
+
+        .card-warn {
+            border-left-color: var(--error);
+            background: rgba(255, 0, 60, 0.05);
+        }
+
+        .card-warn h4 {
+            color: var(--error);
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="cyber-canvas"></canvas>
+
+    <div class="global-logo hidden" id="g-logo">FITBOOST_OS</div>
+
+    <!-- Intro Sequence -->
+    <div id="intro-seq">
+        <div style="text-align: center;">
+            <div class="grand-title">FITBOOST</div>
+            <div class="sub-title" id="intro-sub">Cybernetic Body Enhancement</div>
+        </div>
+    </div>
+
+    <!-- Grand Animation Overlay Between Features -->
+    <div id="overlay-anim" class="hidden">
+        <div class="grand-title text-glow" id="overlay-text" style="font-size: 5vw;"></div>
+    </div>
+
+    <!-- Page 1: Registration -->
+    <div id="p-reg" class="page hidden">
+        <div class="cyber-panel">
+            <h2 class="page-title">Initialize Profile</h2>
+
+            <div class="input-wrapper">
+                <label>Full Name</label>
+                <input type="text" id="reg-name" placeholder="Enter Legal Identity">
+                <div class="err-msg" id="err-name"></div>
+            </div>
+
+            <div class="input-wrapper">
+                <label>Encrypted Email</label>
+                <input type="email" id="reg-email" placeholder="user@net.com">
+                <div class="err-msg" id="err-email"></div>
+            </div>
+
+            <div class="input-wrapper">
+                <label>Date of Birth</label>
+                <input type="date" id="reg-dob">
+                <div class="err-msg" id="err-dob"></div>
+            </div>
+
+            <div class="input-wrapper">
+                <label>Security Key (Password)</label>
+                <input type="password" id="reg-pass" placeholder="Min 4 characters">
+                <div class="err-msg" id="err-pass"></div>
+            </div>
+
+            <div class="input-wrapper">
+                <label>Verify Security Key</label>
+                <input type="password" id="reg-pass2" placeholder="Match key">
+                <div class="err-msg" id="err-pass2"></div>
+            </div>
+
+            <button class="btn-primary" id="btn-reg">Create Comm-Link</button>
+        </div>
+    </div>
+
+    <!-- Page 2: Login -->
+    <div id="p-login" class="page hidden">
+        <div class="cyber-panel">
+            <h2 class="page-title">Access Mainframe</h2>
+
+            <div class="flex-grid" id="login-methods">
+                <div class="select-box active-box" data-method="email">Email</div>
+                <div class="select-box" data-method="phone">Phone/OTP</div>
+                <div class="select-box" data-method="google">Google</div>
+            </div>
+
+            <div id="log-email-sec">
+                <div class="input-wrapper">
+                    <label>Email</label>
+                    <input type="email" id="log-email" placeholder="user@net.com">
+                </div>
+                <div class="input-wrapper">
+                    <label>Password</label>
+                    <input type="password" id="log-pass">
+                </div>
+            </div>
+
+            <div id="log-phone-sec" class="hidden">
+                <div class="input-wrapper">
+                    <label>Comm Unit (10 Digits)</label>
+                    <input type="text" id="log-phone" placeholder="0000000000">
+                </div>
+                <button class="btn-primary btn-outline" id="btn-get-otp"
+                    style="padding:10px; margin-bottom:15px;">Generate OTP Signal</button>
+                <div class="input-wrapper">
+                    <label>Auth Code</label>
+                    <input type="text" id="log-otp" placeholder="4-Digit PIN">
+                </div>
+            </div>
+
+            <div id="log-google-sec" class="hidden" style="text-align: center; padding: 20px 0;">
+                <p style="color:var(--pearl-white); font-size:1.2rem; margin-bottom:20px;">Establish Neural Uplink via
+                    Google</p>
+                <button class="btn-primary btn-outline" id="btn-google">Sync Google Profile</button>
+            </div>
+
+            <div class="err-msg" id="err-login" style="text-align: center; font-size: 1.1rem; margin-bottom: 10px;">
+            </div>
+
+            <button class="btn-primary" id="btn-login">Engage Login</button>
+        </div>
+    </div>
+
+    <!-- Page 3: Data -->
+    <div id="p-data" class="page hidden">
+        <div class="cyber-panel">
+            <h2 class="page-title">Biometric Scan</h2>
+
+            <div class="input-wrapper">
+                <label>Height (cm)</label>
+                <input type="number" id="bi-h" placeholder="e.g. 180">
+            </div>
+
+            <div class="input-wrapper">
+                <label>Weight (kg)</label>
+                <input type="number" id="bi-w" placeholder="e.g. 80">
+            </div>
+
+            <div class="input-wrapper">
+                <label>Age Cycles</label>
+                <input type="number" id="bi-a" placeholder="e.g. 26">
+            </div>
+
+            <div class="input-wrapper">
+                <label>Biological Gender</label>
+                <select id="bi-g">
+                    <option value="">-- Select --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <button class="btn-primary btn-outline" id="btn-bmi">Run Diagnostics (BMI)</button>
+
+            <div class="bmi-screen" id="bmi-view">
+                <div style="font-size:1.2rem; color:var(--pearl-white);">Index Value</div>
+                <div class="bmi-val" id="bmi-num">0.0</div>
+                <div class="bmi-cat" id="bmi-text">None</div>
+            </div>
+
+            <button class="btn-primary hidden" id="btn-go-mod2" style="margin-top: 20px;">Proceed to Protocols</button>
+        </div>
+    </div>
+
+    <!-- Mode 2: Plans Config -->
+    <div id="p-mod2-cfg" class="page hidden">
+        <div class="cyber-panel dashboard-large">
+            <h2 class="page-title">Protocol Vectors</h2>
+            <p style="text-align:center; font-size:1.2rem; margin-bottom:40px; color:#aaa;">Select architecture
+                foundation to generate custom matrices.</p>
+
+            <div style="display:flex; flex-wrap:wrap; gap:40px;">
+                <div style="flex:1; min-width:300px;">
+                    <h3 class="text-neon" style="margin-bottom:20px; text-transform:uppercase;">Experience Level</h3>
+                    <div class="flex-grid" id="sel-exp">
+                        <div class="select-box" data-val="Beginner">Beginner</div>
+                        <div class="select-box" data-val="Intermediate">Intermediate</div>
+                        <div class="select-box" data-val="Professional">Professional</div>
+                    </div>
+                </div>
+
+                <div style="flex:1; min-width:300px;">
+                    <h3 class="text-neon" style="margin-bottom:20px; text-transform:uppercase;">Primary Objective</h3>
+                    <div class="flex-grid" id="sel-goal">
+                        <div class="select-box" data-val="Regular Fitness">Regular Fitness</div>
+                        <div class="select-box" data-val="CrossFit">CrossFit</div>
+                        <div class="select-box" data-val="Bodybuilding">Bodybuilding</div>
+                        <div class="select-box" data-val="Weight Loss">Weight Loss</div>
+                        <div class="select-box" data-val="Weight Gain">Weight Gain</div>
+                        <div class="select-box" data-val="Weight / Power Lifting">Power Lifting</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-primary btn-outline" id="btn-back-data"
+                    style="width:auto; padding: 18px 40px;">Return</button>
+                <button class="btn-primary" id="btn-gen-workout" style="width:auto; padding: 18px 50px;">Synthesize
+                    Matrix</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mod 2: Workout Plan Output -->
+    <div id="p-mod2-out" class="page hidden">
+        <div class="cyber-panel dashboard-large">
+            <h2 class="page-title">7-Day Kinematic Schedule</h2>
+            <p id="plan-desc"
+                style="text-align:center; font-size:1.2rem; color:var(--dreamy-purple); font-weight:bold; margin-bottom: 20px; text-transform: uppercase;">
+            </p>
+
+            <div class="cyber-table-wrap" id="workout-table"></div>
+
+            <div class="btn-row" style="margin-top: 40px;">
+                <button class="btn-primary btn-outline" id="btn-regen-w" style="width:auto;">Generate New Plan</button>
+                <button class="btn-primary valid" id="btn-go-mod3" style="width:auto;">Access Nutrition DB</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mod 3: Diet Chart -->
+    <div id="p-mod3-out" class="page hidden">
+        <div class="cyber-panel dashboard-large">
+            <h2 class="page-title">Fuel & Caloric Intake</h2>
+            <p style="text-align:center; font-size:1.1rem; color:#ccc; margin-bottom: 30px;">Algorithmic nutrition
+                mapped to your kinematic objective.</p>
+
+            <div class="cyber-table-wrap" id="diet-table"></div>
+
+            <div class="btn-row" style="margin-top: 40px;">
+                <button class="btn-primary btn-outline" id="btn-back-w" style="width:auto;">Back to Workout</button>
+                <button class="btn-primary btn-outline" id="btn-regen-d" style="width:auto;">Another Chart</button>
+                <button class="btn-primary valid" id="btn-go-mod4" style="width:auto;">Access Supplements</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mod 4: Supplements -->
+    <div id="p-mod4-out" class="page hidden">
+        <div class="cyber-panel dashboard-large">
+            <h2 class="page-title">Chemical Augmentation</h2>
+            <p style="text-align:center; font-size:1.1rem; color:#ccc; margin-bottom: 30px;">Scientifically backed
+                recovery and enhancement compounds.</p>
+
+            <div class="supp-grid" id="supp-grid"></div>
+
+            <div class="btn-row" style="margin-top: 40px; justify-content: center; gap: 40px;">
+                <button class="btn-primary btn-outline" id="btn-back-d" style="width:auto;">Back to Nutrients</button>
+                <button class="btn-primary valid" id="btn-go-mod5"
+                    style="width:auto; background:linear-gradient(45deg, var(--neon-blue), var(--dark-violet)); color:var(--black);">Process
+                    Analytics</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mod 5: Progress Meters -->
+    <div id="p-mod5-out" class="page hidden">
+        <div class="cyber-panel dashboard-large">
+            <h2 class="page-title">Metrix Diagnostics</h2>
+
+            <div class="meters-grid">
+                <!-- Nutrition -->
+                <div class="meter-card">
+                    <h3 class="meter-title">Nutrition Target (Daily)</h3>
+                    <div id="m-nutr"></div>
+                </div>
+
+                <!-- Gain -->
+                <div class="meter-card">
+                    <h3 class="meter-title">Mass Accrual (30 Days)</h3>
+                    <div id="m-gain"></div>
+                </div>
+
+                <!-- Burn -->
+                <div class="meter-card">
+                    <h3 class="meter-title">Metabolic Burn (30 Days)</h3>
+                    <div id="m-burn"></div>
+                </div>
+            </div>
+
+            <div class="btn-row" style="margin-top: 50px; justify-content: center;">
+                <button class="btn-primary btn-outline" id="btn-back-s" style="width:auto;">Back to Supplements</button>
+                <button class="btn-primary valid" id="btn-restart"
+                    style="width:auto; border-color:var(--error); color:var(--error);">System Reboot</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CANVAS BACKGROUND ---
+        const cvs = document.getElementById('cyber-canvas');
+        const ctx = cvs.getContext('2d');
+        let w, h, particles = [];
+
+        function resizeCvs() {
+            w = cvs.width = window.innerWidth;
+            h = cvs.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCvs);
+        resizeCvs();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.vx = (Math.random() - 0.5) * 1.5;
+                this.vy = (Math.random() - 0.5) * 1.5;
+                this.size = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? 'rgba(0, 229, 255, 0.8)' : 'rgba(138, 43, 226, 0.8)';
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > w) this.vx *= -1;
+                if (this.y < 0 || this.y > h) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => { p.update(); p.draw(); });
+
+            // Connect lines
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        ctx.strokeStyle = `rgba(138, 43, 226, ${1 - dist / 150})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // --- STATE & UTILS ---
+        const S = val => document.getElementById(val);
+        const hide = id => { S(id).classList.add('hidden'); };
+        const show = id => { S(id).classList.remove('hidden'); window.scrollTo(0, 0); };
+        const toggleActive = (btn, cond) => { btn.classList.toggle('valid', cond); };
+
+        const state = {
+            u: { name: "", email: "", pass: "" },
+            bio: { h: 0, w: 0, a: 0, g: "", bmi: 0, bCat: "" },
+            plan: { exp: "", goal: "" }
+        };
+
+        let method = 'email'; let simOtp = "";
+
+        function transition(from, to, animText) {
+            if (animText) {
+                S('overlay-text').innerText = animText;
+                S('overlay-anim').classList.remove('hidden');
+                setTimeout(() => {
+                    hide(from); show(to);
+                    setTimeout(() => S('overlay-anim').classList.add('hidden'), 500);
+                }, 2000);
+            } else {
+                hide(from); show(to);
+            }
+        }
+
+        // --- INTRO ---
+        setTimeout(() => {
+            transition('intro-seq', 'p-reg', null);
+            S('g-logo').classList.remove('hidden');
+        }, 4500);
+
+        // --- 1. REGISTRATION ---
+        function checkReg() {
+            let n = S('reg-name').value.trim();
+            let e = S('reg-email').value.trim();
+            let d = S('reg-dob').value;
+            let p1 = S('reg-pass').value;
+            let p2 = S('reg-pass2').value;
+
+            S('err-name').innerText = n ? "" : "Identity missing";
+            S('err-email').innerText = (e && e.includes('@')) ? "" : "Invalid signal parameters";
+            S('err-dob').innerText = d ? "" : "Require chronological origin";
+            S('err-pass').innerText = (p1.length >= 4) ? "" : "Min 4 characters required";
+            S('err-pass2').innerText = (p1 === p2) ? "" : "Keys do not synthesize";
+
+            toggleActive(S('btn-reg'), n && e.includes('@') && d && p1.length >= 4 && p1 === p2);
+        }
+        ['reg-name', 'reg-email', 'reg-dob', 'reg-pass', 'reg-pass2'].forEach(id => S(id).addEventListener('input', checkReg));
+
+        S('btn-reg').addEventListener('click', () => {
+            if (!S('btn-reg').classList.contains('valid')) return;
+            state.u.name = S('reg-name').value.trim();
+            state.u.email = S('reg-email').value.trim();
+            state.u.pass = S('reg-pass').value;
+            transition('p-reg', 'p-login', "ENCODING SUCCESS");
+        });
+
+        // --- 2. LOGIN ---
+        document.querySelectorAll('#login-methods .select-box').forEach(el => {
+            el.addEventListener('click', (e) => {
+                document.querySelectorAll('#login-methods .select-box').forEach(b => b.classList.remove('active-box'));
+                e.target.classList.add('active-box');
+                method = e.target.getAttribute('data-method');
+
+                hide('log-email-sec'); hide('log-phone-sec'); hide('log-google-sec');
+                show(`log-${method}-sec`);
+                checkLog();
+            });
+        });
+
+        S('btn-get-otp').addEventListener('click', () => {
+            let ph = S('log-phone').value;
+            if (ph.length !== 10 || isNaN(ph)) { S('err-login').innerText = "Requires 10 digit comm link"; return; }
+            simOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            alert(`[SIMULATION OTP] -> ${simOtp}`);
+            S('log-otp').value = simOtp;
+            checkLog();
+        });
+
+        S('btn-google').addEventListener('click', () => { S('log-email').value = "hacker@google.net"; checkLog(); });
+
+        function checkLog() {
+            let ok = false; S('err-login').innerText = "";
+            if (method === 'email') ok = S('log-email').value && S('log-pass').value.length > 0;
+            if (method === 'phone') ok = S('log-phone').value.length === 10 && S('log-otp').value === simOtp && simOtp !== "";
+            if (method === 'google') ok = true;
+            toggleActive(S('btn-login'), ok);
+        }
+        ['log-email', 'log-pass', 'log-phone', 'log-otp'].forEach(id => S(id).addEventListener('input', checkLog));
+
+        S('btn-login').addEventListener('click', () => {
+            if (!S('btn-login').classList.contains('valid')) return;
+            let fn = state.u.name ? state.u.name.split(' ')[0] : 'Operator';
+            transition('p-login', 'p-data', `WELCOME, ${fn.toUpperCase()}`);
+        });
+
+        // --- 3. DATA ---
+        function checkBio() {
+            let h = S('bi-h').value, w = S('bi-w').value, a = S('bi-a').value, g = S('bi-g').value;
+            toggleActive(S('btn-bmi'), h > 0 && w > 0 && a > 0 && g !== "");
+        }
+        ['bi-h', 'bi-w', 'bi-a', 'bi-g'].forEach(id => S(id).addEventListener('input', checkBio));
+
+        S('btn-bmi').addEventListener('click', () => {
+            if (!S('btn-bmi').classList.contains('valid')) return;
+            let h = S('bi-h').value, w = S('bi-w').value;
+            state.bio.h = h; state.bio.w = w; state.bio.a = S('bi-a').value; state.bio.g = S('bi-g').value;
+
+            let hm = h / 100; let bmi = (w / (hm * hm)).toFixed(1);
+            state.bio.bmi = bmi;
+
+            let text = "", color = "";
+            if (bmi < 18.5) { text = "Underweight Warning"; color = "#ff9900"; }
+            else if (bmi <= 24.9) { text = "Optimal Mass"; color = varColor('--neon-blue'); }
+            else if (bmi <= 29.9) { text = "Overweight Alert"; color = "#ff9900"; }
+            else { text = "Obesity Detected"; color = varColor('--error'); }
+
+            state.bio.bCat = text;
+            S('bmi-num').innerText = bmi; S('bmi-text').innerText = text;
+            S('bmi-num').style.color = color; S('bmi-view').style.borderColor = color;
+
+            S('bmi-view').style.display = 'block';
+            S('btn-go-mod2').classList.remove('hidden');
+            S('btn-go-mod2').classList.add('valid');
+        });
+
+        function varColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name); }
+
+        S('btn-go-mod2').addEventListener('click', () => transition('p-data', 'p-mod2-cfg', null));
+
+        // --- 4. CONFIG ---
+        const selBlocks = [
+            { id: 'sel-exp', key: 'exp' },
+            { id: 'sel-goal', key: 'goal' }
+        ];
+        selBlocks.forEach(b => {
+            document.querySelectorAll(`#${b.id} .select-box`).forEach(el => {
+                el.addEventListener('click', (e) => {
+                    document.querySelectorAll(`#${b.id} .select-box`).forEach(box => box.classList.remove('active-box'));
+                    e.target.classList.add('active-box');
+                    state.plan[b.key] = e.target.getAttribute('data-val');
+                    toggleActive(S('btn-gen-workout'), state.plan.exp && state.plan.goal);
+                });
+            });
+        });
+
+        S('btn-back-data').addEventListener('click', () => transition('p-mod2-cfg', 'p-data', null));
+        S('btn-gen-workout').addEventListener('click', () => {
+            if (!S('btn-gen-workout').classList.contains('valid')) return;
+            buildWorkout();
+            transition('p-mod2-cfg', 'p-mod2-out', 'GENERATING MATRIX');
+        });
+
+        // --- GENERATOR LOGIC (RNG, DEEP DB) ---
+        const shuffle = (arr) => arr.map(a => [Math.random(), a]).sort((a, b) => a[0] - b[0]).map(a => a[1]);
+        const pickN = (arr, n) => shuffle(arr).slice(0, n);
+
+        const EX = {
+            warm: ["Dynamic Lunges", "Jumping Jacks", "High Knees", "Arm Circles", "Mountain Climbers", "Burpees", "Rope Simulation", "Plank Walks", "Shadow Boxing", "Butt Kicks"],
+            cool: ["Static Stretching", "Deep Breathing", "Yoga Flow", "Foam Roller", "Hamstring Stretch", "Childs Pose", "Walking", "Calf Stretch", "Chest Opener", "Spinal Twist"],
+
+            "Regular Fitness": {
+                top: ["Full Body Circuit", "Core Focus", "Aerobic Base", "Strength Engine", "Mobility Push", "Conditioning", "Power Output"],
+                main: [{ n: "Body Squats", m: "Legs" }, { n: "Push-Ups", m: "Chest/Tri" }, { n: "Plank", m: "Core" }, { n: "Lunges", m: "Legs" }, { n: "Dumbbell Rows", m: "Back" }, { n: "Glute Bridges", m: "Glutes" }, { n: "Bicycles", m: "Core" }, { n: "Dips", m: "Triceps" }, { n: "Pull-ups", m: "Back" }, { n: "Jumping Squats", m: "Legs" }],
+                opt: [{ n: "Russian Twists", m: "Core" }, { n: "Calf Raises", m: "Calves" }, { n: "Supermans", m: "Lower Back" }, { n: "Leg Raises", m: "Lower Core" }, { n: "Side Plank", m: "Obliques" }]
+            },
+            "CrossFit": {
+                top: ["MetCon Alpha", "WOD Omega", "Olympic Lifts", "Gymnastics", "Endurance Run", "Chipper WOD", "AMRAP Chaos"],
+                main: [{ n: "Snatch", m: "Full" }, { n: "Clean & Jerk", m: "Full" }, { n: "Wall Balls", m: "Legs/Shoulders" }, { n: "Kettlebell Swings", m: "Hams" }, { n: "Box Jumps", m: "Legs" }, { n: "Toes to Bar", m: "Core" }, { n: "Thrusters", m: "Full" }, { n: "Ring Dips", m: "Chest" }, { n: "Double Unders", m: "Cardio" }],
+                opt: [{ n: "Rope Climb", m: "Back/Arms" }, { n: "GHD Situps", m: "Core" }, { n: "Handstand Pushup", m: "Shoulders" }, { n: "Pistol Squats", m: "Legs" }]
+            },
+            "Bodybuilding": {
+                top: ["Chest & Tris", "Back & Biceps", "Quadzilla", "Shoulder Boulders", "Ham & Glutes", "Arm Day", "Upper Body Mass"],
+                main: [{ n: "Bench Press", m: "Chest" }, { n: "Incline DB Press", m: "Chest" }, { n: "Deadlift", m: "Back/Legs" }, { n: "Lat Pulldown", m: "Back" }, { n: "Barbell Squat", m: "Quads" }, { n: "Overhead Press", m: "Shoulders" }, { n: "Barbell Curls", m: "Biceps" }, { n: "Tricep Pushdowns", m: "Triceps" }, { n: "Leg Press", m: "Legs" }, { n: "T-Bar Row", m: "Back" }],
+                opt: [{ n: "Lateral Raises", m: "Delts" }, { n: "Face Pulls", m: "Rear Delts" }, { n: "Cable Crossovers", m: "Chest" }, { n: "Preacher Curls", m: "Biceps" }, { n: "Leg Extensions", m: "Quads" }]
+            },
+            "Weight Loss": {
+                top: ["HIIT Burn", "Fat Torch", "Sweat Equity", "Cardio Sculpt", "Metabolic Push", "Circuit Alpha", "Active Burn"],
+                main: [{ n: "Burpee Over Bar", m: "Full" }, { n: "Battle Ropes", m: "Cardio/Arms" }, { n: "Treadmill Sprints", m: "Cardio" }, { n: "Rowing", m: "Full" }, { n: "KB Goblet Squats", m: "Legs" }, { n: "Jump Lunges", m: "Legs" }, { n: "SkiErg", m: "Cardio" }, { n: "Bear Crawls", m: "Full" }],
+                opt: [{ n: "Plank Jacks", m: "Core" }, { n: "Step-Ups", m: "Legs" }, { n: "Mountain Climbers", m: "Core" }, { n: "Flutter Kicks", m: "Core" }]
+            },
+            "Weight Gain": {
+                top: ["Hypertrophy Base", "Heavy Load", "Density Block", "Strength & Size", "Mass Gainer Phase", "Power Building", "Volume Accumulation"],
+                main: [{ n: "Heavy Squat", m: "Quads" }, { n: "Heavy Deadlift", m: "Back/Legs" }, { n: "Heavy Bench", m: "Chest" }, { n: "Front Squat", m: "Quads" }, { n: "Pendlay Row", m: "Back" }, { n: "Weighted Pull-up", m: "Back/Arms" }, { n: "RDL", m: "Hamstrings" }, { n: "Overhead Pin Press", m: "Shoulders" }],
+                opt: [{ n: "Farmers Walk", m: "Traps" }, { n: "Skullcrushers", m: "Triceps" }, { n: "Hammer Curls", m: "Biceps" }, { n: "Hack Squat", m: "Legs" }]
+            },
+            "Weight / Power Lifting": {
+                top: ["Max Effort Squat", "Max Effort Bench", "Dynamic Deadlift", "Accessories", "GPP Work", "Speed Day", "Heavy Lockouts"],
+                main: [{ n: "Low Bar Squat", m: "Legs" }, { n: "Pause Bench", m: "Chest" }, { n: "Sumo Deadlift", m: "Back/Hams" }, { n: "Good Mornings", m: "Lower Back" }, { n: "Spoto Press", m: "Chest" }, { n: "Box Squat", m: "Legs" }, { n: "Deficit Deadlift", m: "Back" }, { n: "Floor Press", m: "Chest" }],
+                opt: [{ n: "Glute Ham Raise", m: "Hamstrings" }, { n: "Board Press", m: "Triceps" }, { n: "Reverse Hypers", m: "Lower Back" }, { n: "Heavy Shrugs", m: "Traps" }]
+            }
+        };
+
+        function getReps() {
+            let e = state.plan.exp;
+            if (e === "Beginner") return `${3} SETS x ${Math.floor(Math.random() * 4 + 10)} REPS`;
+            if (e === "Intermediate") return `${4} SETS x ${Math.floor(Math.random() * 4 + 8)} REPS`;
+            return `${5} SETS x ${Math.floor(Math.random() * 3 + 4)} REPS`;
+        }
+
+        function buildWorkout() {
+            S('plan-desc').innerText = `Architecture: ${state.plan.exp} // Objective: ${state.plan.goal}`;
+
+            let pool = EX[state.plan.goal];
+            let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            let restMask = [0, 0, 0, 0, 0, 0, 0];
+            let restIdx = pickN([1, 2, 3, 4, 5, 6], 2); // Avoid resting Monday
+            restIdx.forEach(i => restMask[i] = 1);
+
+            let usedMain = new Set();
+
+            let html = `<table><tr><th>Solar Cycle</th><th>Directive</th><th>Pre-Heat (Warm)</th><th>Core Processing (Main Array)</th><th>Auxiliary (Opt)</th><th>Coolant (Rec)</th></tr>`;
+
+            days.forEach((day, i) => {
+                if (restMask[i] === 1) {
+                    html += `<tr><td class="t-day">${day}</td><td colspan="5" class="t-rest">SYSTEM RECOVERY INITIATED // NO EXERTION</td></tr>`;
+                    return;
+                }
+
+                let topic = pickN(pool.top, 1)[0];
+                let w = pickN(EX.warm, 2).join(" + ");
+
+                // Pick 3 unique mains if possible
+                let mains = shuffle(pool.main).filter(x => !usedMain.has(x.n)).slice(0, 3);
+                if (mains.length < 3) { mains = pickN(pool.main, 3); usedMain.clear(); } // Reset fallback
+                mains.forEach(x => usedMain.add(x.n));
+
+                let mStr = mains.map(m => `<span class="text-neon">${m.n}</span><br><span style="font-size:0.85rem; color:#888;">${m.m} // ${getReps()}</span>`).join("<br><br>");
+
+                let opt = pickN(pool.opt, 1)[0];
+                let oStr = `<span class="text-purple">${opt.n}</span><br><span style="font-size:0.85rem; color:#888;">${opt.m} // ${getReps()}</span>`;
+
+                let c = pickN(EX.cool, 2).join(" + ");
+
+                html += `<tr>
+      <td class="t-day">${day}</td>
+      <td class="t-topic">${topic}</td>
+      <td>${w}</td>
+      <td>${mStr}</td>
+      <td>${oStr}</td>
+      <td>${c}</td>
+    </tr>`;
+            });
+
+            html += `</table>`;
+            S('workout-table').innerHTML = html;
+        }
+
+        S('btn-regen-w').addEventListener('click', buildWorkout);
+        S('btn-go-mod3').addEventListener('click', () => { buildDiet(); transition('p-mod2-out', 'p-mod3-out', 'COMPILING DIET'); });
+        S('btn-back-w').addEventListener('click', () => transition('p-mod3-out', 'p-mod2-out', null));
+
+        // --- DIET ---
+        const D_DB = {
+            bfast: ["Oatmeal with Protein Powder & Blueberries", "Eggs & Avocado on Ezekiel Toast", "Greek Yogurt with Chia & Honey", "Protein Pancakes with Sugar-Free Syrup", "Tofu Scramble with Spinach", "Quinoa Porridge with Almonds", "Salmon & Egg Whites Bagel"],
+            lunch: ["Grilled Chicken & Brown Rice + Broccoli", "Turkey Meatball Whole-Wheat Pasta", "Lentil Soup + Lean Beef Slices", "Tuna Salad with Olive Oil & Greens", "Chickpea & Quinoa Cyber-Bowl", "Steak Salad with Balsamic", "Tempeh & Sweet Potato Hash"],
+            pre: ["Banana & Black Coffee", "Rice Cakes with Peanut Butter", "Apple Slices & Whey Shake", "Handful of Almonds & Berries", "Oat Bar & Green Tea", "Dates & Walnuts", "Cottage Cheese & Pineapple"],
+            post: ["Whey Isolate + Dextrose Surge", "Chocolate Milk & Chicken Breast", "Protein Shake + Rice Crispies", "Salmon & White Rice", "Egg Whites & Oats", "Plant Protein + Maltodextrin", "Lean Beef & Potatoes"],
+            dinner: ["Baked Salmon + Asparagus & Quinoa", "Lean Steak + Sweet Potato Wedges", "Chicken Stir-Fry with Zucchini Noodles", "Shrimp Tacos on Corn Tortillas", "Black Bean Burger (No Bun) + Salad", "Roasted Turkey Breast + Mixed Veggies", "Cod Fish + Lemon + Cauliflower Rice"]
+        };
+
+        function buildDiet() {
+            let g = state.plan.goal;
+
+            // modify slightly based on goal visually
+            let modStr = "";
+            if (g.includes("Loss")) modStr = " (CALORIC DEFICIT APPLIED: -500 kcal / LOW CARB)";
+            else if (g.includes("Gain") || g.includes("Bodybuilding") || g.includes("Lifting")) modStr = " (CALORIC SURPLUS APPLIED: +500 kcal / HIGH PRO+CARB)";
+            else modStr = " (MAINTENANCE MATRIX APPLIED: HOMEOSTASIS)";
+
+            let html = `<table><tr><th colspan="2" style="text-align:center; font-size:1.1rem;">NUTRITIONAL ALGORITHM ${modStr}</th></tr>`;
+
+            const addMeal = (name, arr) => {
+                html += `<tr><td class="t-topic">${name}</td><td>${pickN(arr, 1)[0]}</td></tr>`;
+            };
+            addMeal("0800 HRS // BREAKFAST", D_DB.bfast);
+            addMeal("1300 HRS // LUNCH", D_DB.lunch);
+            addMeal("Pre-Kinematic (Workout) Fuel", D_DB.pre);
+            addMeal("Post-Kinematic (Workout) Recovery", D_DB.post);
+            addMeal("2000 HRS // DINNER", D_DB.dinner);
+
+            html += "</table>";
+            S('diet-table').innerHTML = html;
+        }
+        S('btn-regen-d').addEventListener('click', buildDiet);
+        S('btn-go-mod4').addEventListener('click', () => { transition('p-mod3-out', 'p-mod4-out', 'SYNTHESIZING CHEMICALS'); buildSupp(); });
+        S('btn-back-d').addEventListener('click', () => transition('p-mod4-out', 'p-mod3-out', null));
+
+        // --- SUPPLEMENTS ---
+        function buildSupp() {
+            let sups = [
+                { t: "Pre-Workout (Caffeine Engine)", d: "Neural stimulant. Enhances focus and delays muscular fatigue. Administer 150-300mg 30 cycles (mins) pre-exertion." },
+                { t: "Whey Protein Isolate", d: "Rapid-absorption amino acid chain. Crucial for repairing muscle fiber micro-tears post-exertion." },
+                { t: "Creatine Monohydrate", d: "Cellular ATP regenerator. Drastically improves anaerobic power and muscle hydration. 5g daily." },
+                { t: "Multivitamins & Minerals", d: "Micronutrient filler. Optimizes enzymatic processes and immune function in deficient systems." },
+                { t: "Omega-3 Lipid Oils", d: "Powerful anti-inflammatory agent. Smooths joint friction and boosts cardiovascular efficiency." }
+            ];
+
+            let html = "";
+            sups.forEach(s => {
+                html += `<div class="supp-card"><h4>${s.t}</h4><p>${s.d}</p></div>`;
+            });
+
+            // Informational only steroid warning
+            html += `<div class="supp-card card-warn"><h4>[CLASSIFIED] Anabolic & Androgenic Agents</h4><p>INFORMATIONAL: Synthetic derivatives of testosterone vastly accelerate protein synthesis and muscle mass. <b>WARNING:</b> Correlated with severe cardiovascular stress, hepatic toxicity, and endocrine collapse. System algorithms strictly forbid unverified usage.</p></div>`;
+
+            S('supp-grid').innerHTML = html;
+        }
+
+        S('btn-go-mod5').addEventListener('click', () => { transition('p-mod4-out', 'p-mod5-out', 'COMPUTING DATA'); buildMeters(); });
+        S('btn-back-s').addEventListener('click', () => transition('p-mod5-out', 'p-mod4-out', null));
+
+        // --- PROGRESS METERS ---
+        function makeBar(label, val, max, unit, classN) {
+            let pct = Math.min((val / max) * 100, 100);
+            return `
+    <div class="prog-item">
+      <div class="prog-header"><span>${label}</span><span class="prog-val">${val.toFixed(1)}${unit}</span></div>
+      <div class="prog-track"><div class="prog-fill ${classN}" style="width:${pct}%"></div></div>
+    </div>
+  `;
+        }
+
+        function buildMeters() {
+            let w = parseFloat(state.bio.w) || 75;
+            let tdee = w * 22; // rough bmr
+            tdee *= (state.bio.g === "Male" ? 1.1 : 0.95);
+            let eMult = state.plan.exp === "Professional" ? 1.6 : state.plan.exp === "Intermediate" ? 1.4 : 1.2;
+            tdee *= eMult;
+
+            let cal = tdee, pro = w * 2.2, fat = 0, carbs = 0;
+            let mwg = 0, mmg = 0, mfg = 0; // mass gain (weight, muscle, fat)
+            let mfb = 0, mwl = 0; // mass burn (fat, weight)
+
+            let g = state.plan.goal;
+
+            if (g.includes("Gain") || g.includes("Bodybuilding") || g.includes("Lifting")) {
+                cal += 500; fat = (cal * 0.25) / 9; carbs = (cal - (pro * 4) - (fat * 9)) / 4;
+                mwg = 1.8; mmg = 1.2; mfg = 0.6; mfb = 0.5; mwl = 0;
+            } else if (g.includes("Loss") || g.includes("CrossFit")) {
+                cal -= 500; pro = w * 2.5; fat = (cal * 0.3) / 9; carbs = (cal - (pro * 4) - (fat * 9)) / 4;
+                mwg = 0; mmg = 0.2; mfg = 0; mfb = 2.5; mwl = 2.5;
+            } else {
+                cal += 0; fat = (cal * 0.25) / 9; carbs = (cal - (pro * 4) - (fat * 9)) / 4;
+                mwg = 0.5; mmg = 0.5; mfg = 0; mfb = 0.8; mwl = 0.5;
+            }
+
+            S('m-nutr').innerHTML =
+                makeBar("Protein Intake", pro, 300, "g", "") +
+                makeBar("Caloric Fuel", cal, 4500, "kcal", "") +
+                makeBar("Carbohydrate Load", carbs, 600, "g", "") +
+                makeBar("Lipid Reserves", fat, 150, "g", "fill-fat");
+
+            S('m-gain').innerHTML =
+                makeBar("Total Mass Gain", mwg, 5, "kg", "fill-muscle") +
+                makeBar("Skeletal Muscle Hypertrophy", mmg, 3, "kg", "fill-muscle") +
+                makeBar("Visceral Fat Accrual", mfg, 3, "kg", "fill-fat");
+
+            S('m-burn').innerHTML =
+                makeBar("Total Mass Reduction", mwl, 5, "kg", "") +
+                makeBar("Adipose Tissue Target Burn", mfb, 5, "kg", "fill-fat");
+        }
+
+        S('btn-restart').addEventListener('click', () => {
+            transition('p-mod5-out', 'p-reg', 'SYSTEM REBOOT');
+            // clear form ideally
+            state.bio = { h: 0, w: 0, a: 0, g: "", bmi: 0, bCat: "" };
+            S('bi-h').value = ""; S('bi-w').value = ""; S('bmi-view').style.display = 'none';
+            S('btn-bmi').classList.remove('valid'); S('btn-go-mod2').classList.remove('valid'); S('btn-go-mod2').classList.add('hidden');
+        });
+
+    </script>
+</body>
+
+</html>
